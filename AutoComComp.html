@@ -1,0 +1,53 @@
+<apex:page controller="autoComComp">
+ 
+ 
+    <apex:stylesheet value="{!URLFOR($Resource.AutoComjquery,'/jquery-ui.css')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.AutoComjquery,'/jquery-1.12.4.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.AutoComjquery,'/jquery-ui.js')}"/>
+ 
+  <apex:pageBlock >
+  
+   <apex:pageBlockSection collapsible="false" title="Search Account" >
+                <input  id="accountSearch" value="{!searchTerm}" />    
+    </apex:pageBlockSection>
+  </apex:pageBlock>  
+   
+    
+    <script>
+        $(function(){ 
+        debugger; 
+            $("#accountSearch").autocomplete({  
+            //debugger;
+               minLength: 2,  
+               source: function(request, response){  
+                    var searchString = request.term;  
+                    autoComComp.getSearchSuggestions(searchString, function(result, event){  
+                         if(event.status){  
+                              if(typeof result === 'undefined' || result.length <=0){  
+                                   response(['No Record Found']);  
+                              }else {  
+                                   response(result);  
+                              }  
+                         }else {  
+                              response([]);  
+                         }  
+                    },  
+                    {escape: true}  
+                    );  
+               },  
+               select: function(event, ui){  
+                    if(ui.item.label != 'No Record Found'){  
+                        $("#accountSearch").val(ui.item.label);
+                        showAccountDetail(ui.item.value); 
+                    }  
+                    return false;  
+               },  
+               focus: function( event, ui ) {  
+                    $("#accountSearch").val(ui.item.label);  
+                    return false;  
+               }  
+           });  
+  });  
+  </script>
+    
+</apex:page>
